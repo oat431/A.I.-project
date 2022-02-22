@@ -1,11 +1,7 @@
 infinity = float('inf')
 
-"""Search game state to determine best action; use alpha-beta pruning. """
+def alpha_beta_search(state, turn=-1, d=7):
 
-
-def alphabeta_search(state, turn=-1, d=7):
-
-    # Functions used by alpha beta
     def max_value(state, alpha, beta, depth):
         if cutoff_search(state, depth):
             return state.calculate_heuristic()
@@ -54,30 +50,25 @@ def alphabeta_search(state, turn=-1, d=7):
 
 
 def make_move(position, mask, col):
-    """ Helper method to make a move and return new position along with new board position """
     opponent_position = position ^ mask
     new_mask = mask | (mask + (1 << (col * 7)))
     return opponent_position ^ new_mask, new_mask
 
 
 def make_move_opponent(position, mask, col):
-    """ Helper method to only return new board position """
     new_mask = mask | (mask + (1 << (col * 7)))
     return position, new_mask
 
 
-def print_board(state):
-    """
-    Helper method to pretty print binary board (6x7 board with top sentinel row of 0's)
-    """
+def print_board(state):  # print board for debugging
     ai_board, total_board = state.ai_position, state.game_position
     for row in range(5, -1, -1):
-        print("")
+        print()
         for column in range(0, 7):
             if ai_board & (1 << (7 * column + row)):
-                print("1", end='')
+                print("1", end=' ')
             elif total_board & (1 << (7 * column + row)):
-                print("2", end='')
+                print("2", end=' ')
             else:
-                print("0", end='')
-    print("")
+                print("0", end=' ')
+    print()

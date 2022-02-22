@@ -1,3 +1,5 @@
+import random
+
 from gui import game_gui as GUI
 from model.state import State
 from service.move import *
@@ -9,7 +11,7 @@ class Game:
 
     def __init__(self, game_board):
         self.current_state = State(0, 0)
-        self.turn = self.AI
+        self.turn = self.AI if bool(random.getrandbits(1)) else self.PLAYER
         self.first = self.turn
         self.board = game_board
 
@@ -24,7 +26,6 @@ class Game:
         return False
 
     def draw(self):
-        """Check current state to determine if it is in a draw"""
         return State.is_draw(self.current_state.game_position) and not self.has_winning_state()
 
     def has_winning_state(self):
@@ -39,7 +40,6 @@ class Game:
         self.turn = ~self.turn
 
     def query_player(self):
-        """Make a move by querying standard input."""
         print("\nPlayer's Move...")
         column = None
         while column is None:
@@ -60,12 +60,10 @@ class Game:
         self.current_state = State(self.current_state.ai_position, new_game_position, self.current_state.depth + 1)
 
     def query_AI(self):
-        """ AI Bot chooses next best move from current state """
         print("\nAI's Move...")
         temp_position = self.current_state.ai_position
-        self.current_state = alphabeta_search(self.current_state, self.first, d=7)
+        self.current_state = alpha_beta_search(self.current_state, self.first, d=7)
 
-        # Get column for GUI
         column = temp_position ^ self.current_state.ai_position
         column = (column.bit_length() - 1) // 7
         GUI.animateComputerMoving(self.board, column)

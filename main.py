@@ -2,10 +2,12 @@ from gui import game_gui as GUI
 from model.game import Game
 from service.move import *
 
-if __name__ == '__main__':
-    print("Game of connect four is begin")
 
+def game_execute():
     GUI.run()
+
+
+def game_loop():
     while True:
         game_board = GUI.getNewBoard()  # reset board when the game is start
         GUI.drawBoard(game_board)
@@ -21,3 +23,10 @@ if __name__ == '__main__':
 
         WINNER = '' if game.draw() else GUI.COMPUTER if ~game.turn == -1 else GUI.HUMAN  # show who win
         GUI.processGameOver(WINNER, game.board)
+
+
+if __name__ == '__main__':
+    print("Game of connect four is begin")
+    game_execute()
+    game_loop()
+

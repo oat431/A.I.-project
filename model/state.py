@@ -66,10 +66,6 @@ class State:
             return False
 
     def calculate_heuristic(self):
-        """
-        Score based on who can win. Score computed as 22 minus number of moves played
-        i.e. AI wins with 4th move, score = 22 - 4 = 18
-        """
         if self.status == -1:  # AI won
             return 22 - (self.depth // 2)
         elif self.status == 1:  # Player won
@@ -82,16 +78,12 @@ class State:
             return -infinity
 
     def generate_children(self, who_went_first):
-        """ For each column entry, generate a new State if the new position is valid"""
         for i in range(0, 7):
-            # Select column starting from the middle and then to the edges index order [3,2,4,1,5,0,6]
             column = 3 + (1 - 2 * (i % 2)) * (i + 1) // 2
             if not self.game_position & (1 << (7 * column + 5)):
                 if (who_went_first == -1 and self.depth % 2 == 0) or (who_went_first == 0 and self.depth % 2 == 1):
-                    # AI (MAX) Move
                     new_ai_position, new_game_position = make_move(self.ai_position, self.game_position, column)
                 else:
-                    # Player (MIN) move
                     new_ai_position, new_game_position = make_move_opponent(self.ai_position, self.game_position,
                                                                             column)
                 yield State(new_ai_position, new_game_position, self.depth + 1)
